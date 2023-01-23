@@ -4,8 +4,9 @@ package com.aipedia.aipediabackend.exceptionhandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.data.rest.core.RepositoryConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,14 +60,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
   
-  @ExceptionHandler({ ConstraintViolationException.class })
-  public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
-    List<String> errors = new ArrayList<String>();
-    errors.add(ex.getCause().toString());
+  @ExceptionHandler({ RepositoryConstraintViolationException.class })
+  public ResponseEntity<Object> handleConstraintViolation(RepositoryConstraintViolationException ex, WebRequest request) {
+    RepositoryConstraintViolationException nevEx = 
+    (RepositoryConstraintViolationException) ex;
 
-    ErrorResponse apiError = new ErrorResponse(ex.getMessage(), errors,
-        ex.getClass().getName());
-    return new ResponseEntity<Object>(apiError, new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+  String errors = nevEx.getErrors().getAllErrors().stream()
+    .map(p -> p.toString()).collect(Collectors.joining("\n"));
+    return new ResponseEntity<Object>(errors, new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
 
     //return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
   }

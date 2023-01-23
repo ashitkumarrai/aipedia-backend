@@ -25,6 +25,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,7 +59,7 @@ public class ToolCard {
     @CreationTimestamp
     private Date createDate;
 
-
+    @NotNull
     private String description;
 
     @ElementCollection(fetch=FetchType.EAGER)
@@ -74,8 +75,7 @@ public class ToolCard {
     private byte[] img;
 
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
-    private Set<User> addToLibrary;
+
 
 
     @ElementCollection(fetch=FetchType.EAGER)
@@ -86,7 +86,7 @@ public class ToolCard {
     @ManyToOne(cascade = CascadeType.MERGE )
     
     @NotNull
-   @JsonManagedReference
+   @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "toolcard", cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)

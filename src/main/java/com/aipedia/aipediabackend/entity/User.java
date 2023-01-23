@@ -20,6 +20,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -76,12 +77,13 @@ public class User {
 
 
 
-	@ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
-	private Set<ToolCard> library;
+	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
+	private Set<ToolCard> bookmarkedToolcards;
+
 
 	@OneToMany(mappedBy = "user")
-	@JsonBackReference
-    private Collection<ToolCard> toolcard;
+	@JsonManagedReference
+    private Collection<ToolCard> toolcards;
 	
 	
 	
